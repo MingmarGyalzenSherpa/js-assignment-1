@@ -1,8 +1,7 @@
 // imports
-import Ball from "./Ball.js";
-
+import BoxManager from "./BoxManager.js";
 //elements
 const box = document.getElementById("box");
 
-let balls = [];
-const ball = new Ball(0, 0, 1, 2, 50, 50, 3, "red", box);
+let boxManager = new BoxManager(10, box);
+boxManager.start();
