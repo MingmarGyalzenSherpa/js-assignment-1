@@ -1,0 +1,10 @@
+.box {
+  width: 600px;
+  height: 500px;
+  border: 1px solid purple;
+  position: relative;
+}
+
+.circle {
+  position: absolute;
+}
