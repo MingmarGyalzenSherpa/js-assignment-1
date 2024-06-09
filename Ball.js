@@ -57,7 +57,7 @@ export default class Ball {
   }
 
   collisionWithOtherBallDetection(balls) {
-    let cx2, cy2, distanceRequiredSqr, distanceSqr;
+    let cx2, cy2, distanceRequired, distance, distanceSqr;
     let cx1 = this.x + this.radius + this.vector.dx * this.speed;
     let cy1 = this.y + this.radius + this.vector.dy * this.speed;
     //calculate velocity of ball 1
@@ -82,11 +82,15 @@ export default class Ball {
       cx2 = ball.x + ball.radius;
       cy2 = ball.y + ball.radius;
       // calculate the required/minimum distance
-      distanceRequiredSqr = Math.pow(this.radius + ball.radius, 2);
+      // distanceRequiredSqr = Math.pow(this.radius + ball.radius, 2);
+      distanceRequired = this.radius + ball.radius;
 
-      distanceSqr = Math.pow(cx2 - cx1, 2) + Math.pow(cy2 - cy1, 2);
+      // distanceSqr = Math.pow(cx2 - cx1, 2) + Math.pow(cy2 - cy1, 2);
+      distance = Math.hypot(cx2 - cx1, cy2 - cy1);
 
-      if (distanceRequiredSqr < distanceSqr) return; //no collision
+      if (distanceRequired < distance) return; //no collision
+      this.x = this.x - this.vector.dx * this.speed;
+      this.y = this.y - this.vector.dy * this.speed;
 
       //calculate velocity of ball 2
       velocity2 = {
@@ -127,6 +131,8 @@ export default class Ball {
       massFactor1 = (2 * ball.mass) / (this.mass + ball.mass);
       massFactor2 = (2 * this.mass) / (this.mass + ball.mass);
 
+      // calculate distacne square
+      distanceSqr = Math.pow(distance, 2);
       // calculate final velocity
       finalVelocity1 = {
         x:
@@ -147,16 +153,18 @@ export default class Ball {
       };
 
       // update the speed and vector
-      this.speed = Math.sqrt(
-        Math.pow(finalVelocity1.x, 2) + Math.pow(finalVelocity1.y, 2)
-      );
+      // this.speed = Math.sqrt(
+      //   Math.pow(finalVelocity1.x, 2) + Math.pow(finalVelocity1.y, 2)
+      // );
+      this.speed = Math.hypot(finalVelocity1.x, finalVelocity1.y);
 
       this.vector.dx = finalVelocity1.x / this.speed;
       this.vector.dy = finalVelocity1.y / this.speed;
 
-      ball.speed = Math.sqrt(
-        Math.pow(finalVelocity2.x, 2) + Math.pow(finalVelocity2.y, 2)
-      );
+      // ball.speed = Math.sqrt(
+      //   Math.pow(finalVelocity2.x, 2) + Math.pow(finalVelocity2.y, 2)
+      // );
+      ball.speed = Math.hypot(finalVelocity2.x, finalVelocity2.y);
 
       ball.vector.dx = finalVelocity2.x / ball.speed;
       ball.vector.dy = finalVelocity2.y / ball.speed;
@@ -164,11 +172,14 @@ export default class Ball {
   }
 
   borderCollisionDetection() {
-    if (this.x <= 0 || this.x + this.w >= this.parent.offsetWidth) {
+    let futureX = this.x + this.vector.dx * this.speed;
+    let futureY = this.y + this.vector.dy * this.speed;
+
+    if (futureX <= 0 || futureX + this.w >= this.parent.offsetWidth) {
       this.vector.dx = -this.vector.dx;
     }
 
-    if (this.y <= 0 || this.y + this.h >= this.parent.offsetHeight) {
+    if (futureY <= 0 || futureY + this.h >= this.parent.offsetHeight) {
       this.vector.dy = -this.vector.dy;
     }
   }

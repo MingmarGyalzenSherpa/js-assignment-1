@@ -10,6 +10,8 @@ export default class BoxManager {
     this.maxMass = maxMass;
     this.maxSpeed = maxSpeed;
     this.baseWidth = baseWidth;
+    this.containerWidth = this.container.offsetWidth;
+    this.containerHeight = this.container.offsetHeight;
     this.generateBalls();
   }
 
@@ -28,7 +30,6 @@ export default class BoxManager {
       speed = Helper.getRandomIntInclusive(0, this.maxSpeed);
       //generate random x and y
       ({ x, y } = this.generateRandomPosition(width));
-      console.log(x, y);
 
       //check with other boxes , if no overlap push
 
@@ -53,20 +54,19 @@ export default class BoxManager {
 
   overlapsPosition(x, y, width) {
     let radius = x + width / 2;
-    let distanceSqr, requiredDistanceSqr;
+    let distance, requiredDistance;
     // check with boundary
     if (
-      x + width > this.container.offsetWidth - 5 ||
-      y + width > this.container.offsetHeight - 5
+      x + width > this.containerWidth - 5 ||
+      y + width > this.containerHeight - 5
     )
       return true;
 
     //check with other balls
     for (let i = 0; i < this.balls.length; i++) {
-      distanceSqr =
-        Math.pow(this.balls[i].x - x, 2) + Math.pow(this.balls[i].y - y, 2);
-      requiredDistanceSqr = Math.pow(radius + this.balls[i].radius, 2);
-      if (distanceSqr <= requiredDistanceSqr) {
+      distance = Math.hypot(this.balls[i].x - x, this.balls[i].y - y);
+      requiredDistance = radius + this.balls[i].radius;
+      if (distance <= requiredDistance) {
         return true;
       }
     }
