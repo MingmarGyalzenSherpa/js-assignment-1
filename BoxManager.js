@@ -4,7 +4,7 @@ import Helper from "./Helper.js";
 export default class BoxManager {
   balls = [];
 
-  constructor(maxBall, container, maxMass = 5, maxSpeed = 6, baseWidth = 10) {
+  constructor(maxBall, container, maxMass = 3, maxSpeed = 6, baseWidth = 20) {
     this.maxBall = maxBall;
     this.container = container;
     this.maxMass = maxMass;
@@ -26,7 +26,7 @@ export default class BoxManager {
       //generate random mass
       mass = Helper.getRandomIntInclusive(1, this.maxMass);
       // calculate width
-      width = this.baseWidth * mass;
+      width = (this.baseWidth * mass) / 2;
       //generate random speed
       speed = Helper.getRandomIntInclusive(0, this.maxSpeed);
       //generate random x and y
@@ -41,20 +41,15 @@ export default class BoxManager {
   generateRandomPosition(width) {
     let x, y;
     do {
-      x = Helper.getRandomIntInclusive(
-        1,
-        this.container.offsetWidth - width + 5
-      );
-      y = Helper.getRandomIntInclusive(
-        1,
-        this.container.offsetHeight - width + 5
-      );
+      x = Helper.getRandomIntInclusive(1, this.containerWidth - width - 5);
+      y = Helper.getRandomIntInclusive(1, this.containerHeight - width - 5);
+      console.log("no bhayena");
     } while (this.overlapsPosition(x, y, width));
     return { x, y };
   }
 
   overlapsPosition(x, y, width) {
-    let radius = x + width / 2;
+    let radius = width / 2;
     let distance, requiredDistance;
     // check with boundary
     if (
@@ -65,7 +60,12 @@ export default class BoxManager {
 
     //check with other balls
     for (let i = 0; i < this.balls.length; i++) {
-      distance = Math.hypot(this.balls[i].x - x, this.balls[i].y - y);
+      console.log(x + ", " + y);
+      console.log(this.balls[i].x + " , " + this.balls[i].y);
+      distance = Math.hypot(
+        this.balls[i].x + this.balls[i].radius - x - width / 2,
+        this.balls[i].y + this.balls[i].radius - y - width / 2
+      );
       requiredDistance = radius + this.balls[i].radius;
       if (distance <= requiredDistance) {
         return true;
