@@ -4,18 +4,16 @@ export default class Ball {
   #maxSize = 90;
   #maxSpeed = 4;
   colors = ["green", "pink", "yellow", "red", "purple"];
-  constructor(parent) {
+
+  constructor(x, y, mass, width, speed, parent) {
     this.parent = parent;
-    this.mass = 2;
+    this.mass = mass;
     //generate Random size
-    this.w = Helper.getRandomIntInclusive(1, this.#maxSize);
+    this.w = width;
     this.h = this.w;
     //generate random locations
-    this.x = Helper.getRandomIntInclusive(0, parent.offsetWidth - (this.w + 5));
-    this.y = Helper.getRandomIntInclusive(
-      0,
-      parent.offsetHeight - (this.h + 5)
-    );
+    this.x = x;
+    this.y = y;
     // generate random unit vector
     this.vector = {
       dx: Helper.getRandomIntInclusive(-1, 1),
@@ -23,7 +21,7 @@ export default class Ball {
     };
 
     // generate speed
-    this.speed = Helper.getRandomIntInclusive(0, this.#maxSpeed);
+    this.speed = speed;
     // calculate radius
     this.radius = this.w / 2;
     // generate random color
@@ -31,7 +29,6 @@ export default class Ball {
       this.colors[Helper.getRandomIntInclusive(0, this.colors.length - 1)];
 
     // set border radius
-    this.borderRadius = "50%";
     this.createElement();
   }
 
@@ -40,7 +37,7 @@ export default class Ball {
     this.element = document.createElement("div");
     this.element.style.backgroundColor = this.color;
     this.element.classList.add("circle");
-    this.element.style.borderRadius = this.borderRadius;
+    this.element.style.borderRadius = "50%";
     this.element.style.width = `${this.w}px`;
     this.element.style.height = `${this.h}px`;
     this.element.style.left = `${this.x}px`;
@@ -61,8 +58,8 @@ export default class Ball {
 
   collisionWithOtherBallDetection(balls) {
     let cx2, cy2, distanceRequiredSqr, distanceSqr;
-    let cx1 = this.x + this.radius;
-    let cy1 = this.y + this.radius;
+    let cx1 = this.x + this.radius + this.vector.dx * this.speed;
+    let cy1 = this.y + this.radius + this.vector.dy * this.speed;
     //calculate velocity of ball 1
     let velocity1 = {
       x: this.vector.dx * this.speed,
@@ -153,12 +150,14 @@ export default class Ball {
       this.speed = Math.sqrt(
         Math.pow(finalVelocity1.x, 2) + Math.pow(finalVelocity1.y, 2)
       );
+
       this.vector.dx = finalVelocity1.x / this.speed;
       this.vector.dy = finalVelocity1.y / this.speed;
 
       ball.speed = Math.sqrt(
         Math.pow(finalVelocity2.x, 2) + Math.pow(finalVelocity2.y, 2)
       );
+
       ball.vector.dx = finalVelocity2.x / ball.speed;
       ball.vector.dy = finalVelocity2.y / ball.speed;
     });
