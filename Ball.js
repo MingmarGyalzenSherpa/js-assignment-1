@@ -1,8 +1,6 @@
 import Helper from "./Helper.js";
 
 export default class Ball {
-  #maxSize = 90;
-  #maxSpeed = 4;
   colors = ["green", "pink", "yellow", "red", "purple"];
 
   constructor(x, y, mass, width, speed, parent) {
@@ -24,6 +22,9 @@ export default class Ball {
     this.speed = speed;
     // calculate radius
     this.radius = this.w / 2;
+
+    this.cx = this.x + this.radius;
+    this.cy = this.y + this.radius;
     // generate random color
     this.color =
       this.colors[Helper.getRandomIntInclusive(0, this.colors.length - 1)];
@@ -40,8 +41,9 @@ export default class Ball {
     this.element.style.borderRadius = "50%";
     this.element.style.width = `${this.w}px`;
     this.element.style.height = `${this.h}px`;
-    this.element.style.left = `${this.x}px`;
-    this.element.style.top = `${this.y}px`;
+    // this.element.style.left = `${this.x}px`;
+    this.element.style.transform = `translate(${this.x}px,${this.y}px)`;
+    // this.element.style.top = `${this.y}px`;
     this.parent.appendChild(this.element);
   }
 
@@ -49,17 +51,19 @@ export default class Ball {
   move() {
     this.x = this.x + this.vector.dx * this.speed;
     this.y = this.y + this.vector.dy * this.speed;
+    this.cx = this.x + this.radius;
+    this.cy = this.y + this.radius;
   }
 
   updateElement() {
-    this.element.style.left = `${this.x}px`;
-    this.element.style.top = `${this.y}px`;
+    // this.element.style.left = `${this.x}px`;
+    // this.element.style.top = `${this.y}px`;
+    this.element.style.transform = `translate(${this.x}px,${this.y}px)`;
   }
 
   collisionWithOtherBallDetection(balls) {
-    let cx2, cy2, distanceRequired, distance, distanceSqr;
-    let cx1 = this.x + this.radius + this.vector.dx * this.speed;
-    let cy1 = this.y + this.radius + this.vector.dy * this.speed;
+    let distanceRequired, distance, distanceSqr, overlap;
+
     //calculate velocity of ball 1
     let velocity1 = {
       x: this.vector.dx * this.speed,
@@ -78,19 +82,20 @@ export default class Ball {
       finalVelocity2;
     balls.forEach((ball) => {
       if (this == ball) return;
-      // calculate the center of ball
-      cx2 = ball.x + ball.radius;
-      cy2 = ball.y + ball.radius;
+
       // calculate the required/minimum distance
       // distanceRequiredSqr = Math.pow(this.radius + ball.radius, 2);
       distanceRequired = this.radius + ball.radius;
 
       // distanceSqr = Math.pow(cx2 - cx1, 2) + Math.pow(cy2 - cy1, 2);
-      distance = Math.hypot(cx2 - cx1, cy2 - cy1);
+      distance = Math.hypot(ball.cx - this.cx, ball.cy - this.cy);
 
       if (distanceRequired < distance) return; //no collision
-      this.x = this.x - this.vector.dx * this.speed;
-      this.y = this.y - this.vector.dy * this.speed;
+      overlap = distanceRequired - distance;
+      this.x -= (overlap * (ball.cx - this.cx)) / distance;
+      this.y -= (overlap * (ball.cy - this.cy)) / distance;
+      ball.x += (overlap * (ball.cx - this.cx)) / distance;
+      ball.y += (overlap * (ball.cy - this.cy)) / distance;
 
       //calculate velocity of ball 2
       velocity2 = {
@@ -110,13 +115,13 @@ export default class Ball {
 
       //calculate ball1 difference vector
       ball1DifferenceVector = {
-        x: cx1 - cx2,
-        y: cy1 - cy2,
+        x: this.cx - ball.cx,
+        y: this.cy - ball.cy,
       };
 
       ball2DifferenceVector = {
-        x: cx2 - cx1,
-        y: cy2 - cy1,
+        x: ball.cx - this.cx,
+        y: ball.cy - this.cy,
       };
 
       //calculate dot product

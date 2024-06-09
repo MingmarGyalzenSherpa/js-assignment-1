@@ -13,6 +13,7 @@ export default class BoxManager {
     this.containerWidth = this.container.offsetWidth;
     this.containerHeight = this.container.offsetHeight;
     this.generateBalls();
+    setInterval(() => console.log(this.balls), 2000);
   }
 
   //get Mass, baseWidth,
