@@ -177,14 +177,14 @@ export default class Ball {
   }
 
   borderCollisionDetection() {
-    let futureX = this.x + this.vector.dx * this.speed;
-    let futureY = this.y + this.vector.dy * this.speed;
-
-    if (futureX <= 0 || futureX + this.w >= this.parent.offsetWidth) {
+    if (this.x <= 0 || this.x + this.w >= this.parent.offsetWidth) {
+      this.x = this.x <= 0 ? 0 : this.parent.offsetWidth - this.w - 10;
+      console.log("x is " + this.x);
       this.vector.dx = -this.vector.dx;
     }
 
-    if (futureY <= 0 || futureY + this.h >= this.parent.offsetHeight) {
+    if (this.y <= 0 || this.y + this.h >= this.parent.offsetHeight) {
+      this.y = this.y <= 0 ? 0 : this.parent.offsetHeight - this.h - 10;
       this.vector.dy = -this.vector.dy;
     }
   }

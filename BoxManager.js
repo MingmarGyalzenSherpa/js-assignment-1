@@ -43,7 +43,6 @@ export default class BoxManager {
     do {
       x = Helper.getRandomIntInclusive(1, this.containerWidth - width - 5);
       y = Helper.getRandomIntInclusive(1, this.containerHeight - width - 5);
-      console.log("no bhayena");
     } while (this.overlapsPosition(x, y, width));
     return { x, y };
   }
