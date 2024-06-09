@@ -20,6 +20,7 @@ export default class BoxManager {
     this.balls.forEach((ball) => {
       ball.move();
       ball.borderCollisionDetection();
+      ball.collisionWithOtherBallDetection(this.balls);
       ball.updateElement();
     });
 
