@@ -173,7 +173,7 @@ export default class Ball {
       } else {
         this.vector.dx = finalVelocity1.x / this.speed;
         this.vector.dy = finalVelocity1.y / this.speed;
-        if (this.speed > 40) this.speed = 40;
+        if (this.speed > 20) this.speed = 20;
       }
 
       // ball.speed = Math.sqrt(
@@ -186,7 +186,7 @@ export default class Ball {
       } else {
         ball.vector.dx = finalVelocity2.x / ball.speed;
         ball.vector.dy = finalVelocity2.y / ball.speed;
-        if (ball.speed > 40) ball.speed = 40;
+        if (ball.speed > 20) ball.speed = 20;
       }
     });
   }
