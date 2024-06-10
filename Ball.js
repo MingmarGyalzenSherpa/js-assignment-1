@@ -167,17 +167,27 @@ export default class Ball {
       //   Math.pow(finalVelocity1.x, 2) + Math.pow(finalVelocity1.y, 2)
       // );
       this.speed = Math.hypot(finalVelocity1.x, finalVelocity1.y);
-      if (this.speed > 40) this.speed = 40;
-      this.vector.dx = finalVelocity1.x / this.speed;
-      this.vector.dy = finalVelocity1.y / this.speed;
+      if (this.speed == 0) {
+        this.vector.dx = 0;
+        this.vector.dy = 0;
+      } else {
+        this.vector.dx = finalVelocity1.x / this.speed;
+        this.vector.dy = finalVelocity1.y / this.speed;
+        if (this.speed > 40) this.speed = 40;
+      }
 
       // ball.speed = Math.sqrt(
       //   Math.pow(finalVelocity2.x, 2) + Math.pow(finalVelocity2.y, 2)
       // );
       ball.speed = Math.hypot(finalVelocity2.x, finalVelocity2.y);
-      if (ball.speed > 40) ball.speed = 40;
-      ball.vector.dx = finalVelocity2.x / ball.speed;
-      ball.vector.dy = finalVelocity2.y / ball.speed;
+      if (ball.speed == 0) {
+        ball.vector.dx = 0;
+        ball.vector.dy = 0;
+      } else {
+        ball.vector.dx = finalVelocity2.x / ball.speed;
+        ball.vector.dy = finalVelocity2.y / ball.speed;
+        if (ball.speed > 40) ball.speed = 40;
+      }
     });
   }
 
