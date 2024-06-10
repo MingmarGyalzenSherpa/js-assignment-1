@@ -7,7 +7,7 @@ export default class Ball {
     this.parent = parent;
     this.mass = mass;
     //generate Random size
-    this.w = width;
+    this.w = 10;
     this.h = this.w;
     //generate random locations
     this.x = x;
@@ -42,7 +42,7 @@ export default class Ball {
     this.element.style.width = `${this.w}px`;
     this.element.style.height = `${this.h}px`;
     // this.element.style.left = `${this.x}px`;
-    this.element.style.transform = `translate(${this.x}px,${this.y}px)`;
+    this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
     // this.element.style.top = `${this.y}px`;
     this.parent.appendChild(this.element);
   }
@@ -52,13 +52,14 @@ export default class Ball {
     this.x = this.x + this.vector.dx * this.speed;
     this.y = this.y + this.vector.dy * this.speed;
     this.cx = this.x + this.radius;
+    // console.log({ x: this.x, vectorX: this.vector.dx, speed: this.speed });
     this.cy = this.y + this.radius;
   }
 
   updateElement() {
     // this.element.style.left = `${this.x}px`;
     // this.element.style.top = `${this.y}px`;
-    this.element.style.transform = `translate(${this.x}px,${this.y}px)`;
+    this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
   }
 
   collisionWithOtherBallDetection(balls) {
@@ -81,17 +82,17 @@ export default class Ball {
       finalVelocity1,
       finalVelocity2;
     balls.forEach((ball) => {
-      if (this == ball) return;
+      if (this === ball) return;
 
       // calculate the required/minimum distance
       // distanceRequiredSqr = Math.pow(this.radius + ball.radius, 2);
       distanceRequired = this.radius + ball.radius;
 
       // distanceSqr = Math.pow(cx2 - cx1, 2) + Math.pow(cy2 - cy1, 2);
-      distance = Math.hypot(ball.cx - this.cx, ball.cy - this.cy);
-
+      distance = Math.hypot(ball.cx - this.cx, ball.cy - this.cy) + 0.0001;
       if (distanceRequired < distance) return; //no collision
       overlap = distanceRequired - distance;
+      // console.log("collision done");
       this.x -= (overlap * (ball.cx - this.cx)) / distance;
       this.y -= (overlap * (ball.cy - this.cy)) / distance;
       ball.x += (overlap * (ball.cx - this.cx)) / distance;
@@ -123,6 +124,8 @@ export default class Ball {
         x: ball.cx - this.cx,
         y: ball.cy - this.cy,
       };
+      // console.log({ thisCx: this.cx, thisCy: this.cy });
+      // console.log({ ballCx: this.cx, ballCy: this.cy });
 
       //calculate dot product
       dotProduct1 =
@@ -132,6 +135,8 @@ export default class Ball {
         velocity21.x * ball2DifferenceVector.x +
         velocity21.y * ball2DifferenceVector.y;
 
+      // console.log(velocity12);
+      // console.log(velocity21);
       // calculate massFactor
       massFactor1 = (2 * ball.mass) / (this.mass + ball.mass);
       massFactor2 = (2 * this.mass) / (this.mass + ball.mass);
@@ -162,7 +167,7 @@ export default class Ball {
       //   Math.pow(finalVelocity1.x, 2) + Math.pow(finalVelocity1.y, 2)
       // );
       this.speed = Math.hypot(finalVelocity1.x, finalVelocity1.y);
-
+      if (this.speed > 40) this.speed = 40;
       this.vector.dx = finalVelocity1.x / this.speed;
       this.vector.dy = finalVelocity1.y / this.speed;
 
@@ -170,7 +175,7 @@ export default class Ball {
       //   Math.pow(finalVelocity2.x, 2) + Math.pow(finalVelocity2.y, 2)
       // );
       ball.speed = Math.hypot(finalVelocity2.x, finalVelocity2.y);
-
+      if (ball.speed > 40) ball.speed = 40;
       ball.vector.dx = finalVelocity2.x / ball.speed;
       ball.vector.dy = finalVelocity2.y / ball.speed;
     });
@@ -179,7 +184,6 @@ export default class Ball {
   borderCollisionDetection() {
     if (this.x <= 0 || this.x + this.w >= this.parent.offsetWidth) {
       this.x = this.x <= 0 ? 0 : this.parent.offsetWidth - this.w - 10;
-      console.log("x is " + this.x);
       this.vector.dx = -this.vector.dx;
     }
 

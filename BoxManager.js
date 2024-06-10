@@ -13,7 +13,6 @@ export default class BoxManager {
     this.containerWidth = this.container.offsetWidth;
     this.containerHeight = this.container.offsetHeight;
     this.generateBalls();
-    setInterval(() => console.log(this.balls), 2000);
   }
 
   //get Mass, baseWidth,
@@ -44,7 +43,9 @@ export default class BoxManager {
       x = Helper.getRandomIntInclusive(1, this.containerWidth - width - 5);
       y = Helper.getRandomIntInclusive(1, this.containerHeight - width - 5);
     } while (this.overlapsPosition(x, y, width));
+    
     return { x, y };
+
   }
 
   overlapsPosition(x, y, width) {
@@ -59,8 +60,6 @@ export default class BoxManager {
 
     //check with other balls
     for (let i = 0; i < this.balls.length; i++) {
-      console.log(x + ", " + y);
-      console.log(this.balls[i].x + " , " + this.balls[i].y);
       distance = Math.hypot(
         this.balls[i].x + this.balls[i].radius - x - width / 2,
         this.balls[i].y + this.balls[i].radius - y - width / 2
@@ -75,13 +74,12 @@ export default class BoxManager {
 
   //   start animation
   start = () => {
+    requestAnimationFrame(this.start);
     this.balls.forEach((ball) => {
       ball.move();
       ball.borderCollisionDetection();
       ball.collisionWithOtherBallDetection(this.balls);
       ball.updateElement();
     });
-
-    requestAnimationFrame(this.start);
   };
 }
