@@ -7,7 +7,7 @@ export default class Ball {
     this.parent = parent;
     this.mass = mass;
     //generate Random size
-    this.w = 10;
+    this.w = width;
     this.h = this.w;
     //generate random locations
     this.x = x;

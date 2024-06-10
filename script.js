@@ -5,5 +5,5 @@ import Helper from "./Helper.js";
 const box = document.getElementById("box");
 const maxBalls = 100;
 const balls = Helper.getRandomIntInclusive(1, maxBalls);
-let boxManager = new BoxManager(maxBalls, box);
+let boxManager = new BoxManager(balls, box);
 boxManager.start();
